@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -17,6 +18,7 @@ class RegisterController extends Controller
      */
     public function __invoke(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             // 'username' => 'required|unique:users,username',
             'fullname' => 'required',
@@ -36,13 +38,18 @@ class RegisterController extends Controller
             return response()->json(['failed' => true, 'description' => $validator->errors()->first()], 400);
         }
 
-        User::create([
-            'fullname' => $request->fullname,
-            'username' => $request->username,
-            'email' => $request->email,
+        $user = User::create([
+            'fullname' => $request['fullname'],
+            'username' => ($request['username']) ? $request['username'] : 'User' . random_int(1, 1000),
+            'email' => $request['email'],
             'password' => Hash::make($request->password)
         ]);
 
-        return response()->json(['failed' => false, 'description' => 'account created!'], 201);
+        return response()->json([
+            'failed' => false,
+            'description' => 'account created!',
+            'user' => $user,
+            'token' => $user->createToken(env('TOKEN_SECRET', 'key'))->plainTextToken
+        ], 201);
     }
 }

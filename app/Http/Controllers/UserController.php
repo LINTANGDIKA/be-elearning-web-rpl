@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -25,7 +27,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return response()->json([
+            'failed' => true,
+            'description' => 'Unauthorized'
+        ], 400);
     }
 
     /**
@@ -36,7 +41,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return $user;
     }
 
     /**
@@ -48,7 +53,27 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        // if (!$request->isJson())
+        //     return response()->json([
+        //         'failed' => true,
+        //         'description' => 'only accept json'
+        //     ], 400);
+
+        $user->update($request->only([
+            'fullname',
+            'username',
+            'email'
+        ]));
+
+        if ($request->has('password'))
+            $user->update([
+                'password' => Hash::make($request['password'])
+            ]);
+
+        return response()->json([
+            'failed' => false,
+            'description' => 'User updated!'
+        ]);
     }
 
     /**
@@ -59,6 +84,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return response()->json([
+            'failed' => false,
+            'description' => 'User deleted!'
+        ], 200);
     }
 }

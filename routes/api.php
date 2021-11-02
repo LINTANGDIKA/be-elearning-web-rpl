@@ -20,6 +20,6 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', RegisterController::class);
 Route::post('login', LoginController::class);
 
-Route::middleware([])->group(function () {
-    Route::apiResource('users', UserController::class);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::apiResource('users', UserController::class)->except('store');
 });
