@@ -20,18 +20,17 @@ class RegisterController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            // 'username' => 'required|unique:users,username',
+            'username' => 'unique:users,username',
             'fullname' => 'required',
             'email' => 'required|unique:users,email',
             'password' => 'required|min:5',
-            // 'password_confirmation' => 'required'
         ], [
+            'username.unique' => 'Username must be unique!',
             'fullname.required' => 'Full name must not empty!',
             'email.required' => 'email must not empty!',
             'email.unique' => 'email is already been taken!',
             'password.required' => 'password must not empty!',
             'password.min' => 'password must be more than 5 characters!',
-            // 'password_confirmation.required' => 'password confirmation must not empty!'
         ]);
 
         if ($validator->fails()) {

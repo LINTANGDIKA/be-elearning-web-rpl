@@ -53,12 +53,6 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        // if (!$request->isJson())
-        //     return response()->json([
-        //         'failed' => true,
-        //         'description' => 'only accept json'
-        //     ], 400);
-
         $user->update($request->only([
             'fullname',
             'username',

@@ -22,9 +22,9 @@ class Material extends Model
 
     protected $primaryKey = 'vc_id';
 
-    protected $appends = ['material_item'];
+    protected $appends = ['array_materialitem'];
 
-    public function getMaterialItemAttribute() {
+    public function getArrayMaterialitemAttribute() {
         return ItemMaterial::where('vc_materialid', $this->vc_id)->get();
     }
 }
